@@ -1,28 +1,54 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <input
+      type="text"
+      v-model="token"
+      name="token"
+      placeholder="Enter access token"
+    />
+    <button type="button" @click="getUser">GET /user</button>
+    <div id="result">
+      {{ result }}
+    </div>
+    <div id="error">
+      {{ error }}
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import axios from "axios";
 
 export default {
   name: "app",
-  components: {
-    HelloWorld
+  data() {
+    return {
+      apiURL: "https://api-dev.endpass.com/v1",
+      token: "",
+      result: null,
+      error: null
+    };
+  },
+  methods: {
+    getUser() {
+      axios({
+        method: "GET",
+        url: `${this.apiURL}/user`,
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          "X-Requested-With": "XMLHttpRequest"
+        }
+      })
+        .then(response => {
+          this.result = response;
+        })
+        .catch(error => {
+          console.log(error);
+          this.error = error;
+        });
+    }
   }
 };
 </script>
 
-<style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style></style>
